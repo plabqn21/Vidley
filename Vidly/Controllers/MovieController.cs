@@ -1,23 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Data.Entity;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using Vidly.Models;
-    
+
 namespace Vidly.Controllers
 {
     public class MovieController : Controller
     {
-        // GET: Movie
-        public ActionResult Random()
-        {
+        private ApplicationDbContext db;
 
-            var movie = new Movie()
-            {
-                Name = "Rama"
-            };
-            return View(movie);
+        public MovieController()
+        {
+            db = new ApplicationDbContext();
+        }
+        public ActionResult Index()
+        {
+            var Movies = db.Movies.Include(c => c.Genre).ToList();
+
+            return View(Movies);
+        }
+
+        public ActionResult Details(int Id)
+        {
+            var Movies = db.Movies.Include(c => c.Genre).SingleOrDefault(x => x.Id == Id);
+
+            return View(Movies);
         }
     }
 }
